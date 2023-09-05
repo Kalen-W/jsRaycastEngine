@@ -1,0 +1,52 @@
+defaultMap.json isn't actually used, but acts as a basic template.
+
+id: "id"  // Currently only used for logging the id to console when loaded.
+wallData: [[type]]
+triggerData: [[x, y, volatile, [event, eventArg...], [condition, conditionArg...]]]
+itemData: [{type, x, y}]
+enemyData: [[type, x, y, angle]]
+playerData: {x, y, angle}
+floorColors: [position, "color code", position, "color code"...]
+ceilingColors: [position, "color code", position, "color code"...]
+
+
+Wall Types:
+0 - empty
+1 - blue bricks
+2 - blue brick cell
+3 - stone_dark
+4 - wood
+5 - leaves
+6 - crate
+
+Trigger Events:
+ - teleportPlayer
+ - mapTransition
+ - spawnEnemies
+
+Trigger Conditions:
+ - allEnemiesDead
+
+Item Types:
+0 - table and chairs
+1 - suit of armor
+2 - green potted plant
+3 - hanging lamp
+4 - mana orb
+5 - transparent leaves
+
+
+
+
+suburbIntro Notes:
+================================================================
+Item Data Grouping: (row-column)
+ - Starting House (1-4)
+ - House (1-1)
+ - House (1-2)
+ - House (1-3)
+ - House (2-1)
+ - House (2-2)
+ - House (2-3)
+ - House (2-4)
+ - Leaf Sprite Test TODO: remove

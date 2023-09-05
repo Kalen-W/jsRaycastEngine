@@ -1,0 +1,26 @@
+{
+  "id": "defaultMap",
+
+  "wallData": [
+    [1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1]
+  ],
+
+  "triggerData": [],
+
+  "wallTriggerData": [],
+
+  "itemData": [],
+
+  "enemyData": [],
+
+  "playerData": {"x": 0, "y": 0, "angle": 0},
+
+  "floorColors":   [0,   "#4e584f", 1, "#2e3933"],
+  "ceilingColors": [0.2, "#748cbb", 1, "#b1d4e9"],
+  "fogColor": "#b1cee0"
+}

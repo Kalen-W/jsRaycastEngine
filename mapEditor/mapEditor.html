@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="author" content="XCVIII">
+  <meta name="description" content="">
+  <meta name="keywords" contents="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map Editor</title>
+  <link rel="stylesheet" type="text/css" href="./mapEditor-styles.css">
+</head>
+<body onload="init()">
+
+
+  <table id="mapTable" class="alignItems"></table>
+
+  <div id="printDiv" onClick="movePrintDiv()">
+    <!--<div id="printDiv-inner" onClick="stopMovePrintDiv(event)"></div>-->
+    <textarea id="printDiv-inner" onClick="stopMovePrintDiv(event)" readonly></textarea>
+  </div>
+
+  <div id="numChangeTableContainer"><table id="numChangeTable" class="alignItems"><tr>
+    <td id="numChange-1" class="alignItems cell-1" onClick="setNumChange(1)">1</td>
+    <td id="numChange-2" class="alignItems cell-2" onClick="setNumChange(2)">2</td>
+    <td id="numChange-3" class="alignItems cell-3" onClick="setNumChange(3)">3</td>
+    <td id="numChange-4" class="alignItems cell-4" onClick="setNumChange(4)">4</td>
+    <td id="numChange-5" class="alignItems cell-5" onClick="setNumChange(5)">5</td>
+    <td id="numChange-6" class="alignItems cell-6" onClick="setNumChange(6)">6</td>
+    <td id="numChange-7" class="alignItems cell-7" onClick="setNumChange(7)">7</td>
+    <td id="numChange-0" class="alignItems cell-0" onClick="setNumChange(0)">0</td>
+  </tr></table></div>
+
+
+  <script>if (typeof cellSize == 'undefined') { var cellSize = 0; }</script>
+  <script src="../sourceCode/maps.js"></script>
+  <script src="./mapEditor-code.js"></script>
+</body>
+</html>

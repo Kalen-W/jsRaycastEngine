@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="author" content="Kalen Weinheimer">
+  <meta name="description" content="This is an attempt at creating a simple raycasting engine / game that draws directly onto a canvas.">
+  <meta name="keywords" contents="raycast, raycasting, raycaster, engine, game, javascript, canvas">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel='icon' type='image/png' sizes='16x16' href='./assets/icon-16x16.png'>
+  <link rel='icon' type='image/png' sizes='32x32' href='./assets/icon-32x32.png'>
+  <title>Raycasting Engine Prototype</title>
+
+  <link rel='stylesheet' type='text/css' href='./styles.css'>
+
+
+<!--============================================================================================================================|Preloads-->
+  <link rel='preload' href='./assets/fonts/VT323-Regular.ttf' as='font' type='font/ttf' crossorigin>
+  <link rel='preload' href='./assets/textures/wallTextures/walls.png' as='image' type='image/png'>
+  <link rel='preload' href='./assets/textures/environmentSprites/tablechairs.png' as='image' type='image/png'>
+  <link rel='preload' href='./assets/textures/environmentSprites/armor.png' as='image' type='image/png'>
+  <link rel='preload' href='./assets/textures/environmentSprites/plantgreen.png' as='image' type='image/png'>
+  <link rel='preload' href='./assets/textures/environmentSprites/lamp.png' as='image' type='image/png'>
+
+  <link rel='preload' href='./assets/textures/enemySprites/guard.png' as='image' type='image/png'>
+  <link rel='preload' href='./assets/textures/weaponSprites/wolfensteinWeapon-pistol.png' as='image' type='image/png'>
+</head>
+<body>
+
+
+<div id='canvasContainer'></div>
+
+<!--============================================================================================================================|Map Editor Overlay-->
+  <div id='mapEditor-container'></div>
+
+
+<!--============================================================================================================================|Graphics Menu-->
+  <div id='screenOverlay-graphicsMenu' class='unselectable alignItems'>
+    <button id='btn-menu-close-graphics' class='alignItems'>X</button>
+    <span id='menuTitle-graphics'>Graphics Options</span>
+    <hr class='menuHr'/>
+    <div id='menuContents-graphics' class='alignItems'>
+
+      <div id='menu-graphics-optionsGrid' class='alignItems'>
+        <div id='menu-graphics-labelContainer-fov' title="Warning: It's recommended the FOV isn't changed."><label for='slider-menu-graphics-fov'>Field Of View</label></div>
+        <div id='menu-graphics-inputContainer-fov' title="Warning: It's recommended the FOV isn't changed."><input id='slider-menu-graphics-fov' class='optionSlider' type='range' min='40' max='120' value='70' step='1'><div id='optionSliderDisplayValue-fov'></div></div>
+        <span class='optionInfo'>Warning: Game doesn't look very good at higher FOVs, and should be left at about 70.<br /></span>
+
+        <!-- <div id='menu-graphics-labelContainer-lineWidth' title="Increasing wall fidelity may improve performance. (lower = better visuals)"><label for='slider-menu-graphics-lineWidth'>Wall Fidelity</label></div>
+        <div id='menu-graphics-inputContainer-lineWidth' title="Increasing wall fidelity may improve performance. (lower = better visuals)"><input id='slider-menu-graphics-lineWidth' class='optionSlider' type='range' min='1' max='32' value='70' step='1'><div id='optionSliderDisplayValue-lineWidth'></div></div> -->
+
+        <div id='menu-graphics-labelContainer-fog'><label for='toggle-menu-graphics-fog'>Toggle Fog</label></div>
+        <div id='menu-graphics-inputContainer-fog'><input id='toggle-menu-graphics-fog' type='checkbox' checked></div>
+      </div>
+
+    </div>
+  </div>
+
+
+<!--============================================================================================================================|Options Menu-->
+  <div id='screenOverlay-optionsMenu' class='unselectable alignItems'>
+    <button id='btn-menu-close-options' class='alignItems'>X</button>
+    <span id='menuTitle-options'>General Options</span>
+    <hr class='menuHr' />
+    <div id='menuContents-options' class='alignItems'>
+      <div id='menu-options-optionsGrid' class='alignItems'>
+
+        <span class='titleSpan-menu-controls'>- User Interface<hr class='menuHr-menuDivider' /></span>
+
+        <div id='menu-options-labelContainer-minimap'><label for='toggle-menu-options-minimap'>Enable Minimap</label></div>
+        <div id='menu-options-inputContainer-minimap'><input id='toggle-menu-options-minimap' name='toggleMinimap' type='checkbox'></div>
+
+        <div id='menu-options-labelContainer-minimapScale'><label for='slider-menu-options-minimapScale'>Minimap Scale</label></div>
+        <div id='menu-options-inputContainer-minimapScale'><input id='slider-menu-options-minimapScale' class='optionSlider' type='range' min='0' max='1' value='0.5' step='0.05'><div id='optionSliderDisplayValue-minimapScale'></div></div>
+
+        <div id='menu-options-labelContainer-minimapOpacity'><label for='slider-menu-options-minimapOpacity'>Minimap Opacity</label></div>
+        <div id='menu-options-inputContainer-minimapOpacity'><input id='slider-menu-options-minimapOpacity' class='optionSlider' type='range' min='0' max='1' value='0.8' step='0.05'><div id='optionSliderDisplayValue-minimapOpacity'></div></div>
+
+        <div id='menu-options-labelContainer-compass'><label for='toggle-menu-options-compass'>Enable Compass</label></div>
+        <div id='menu-options-inputContainer-compass'><input id='toggle-menu-options-compass' name='toggleCompass' type='checkbox' checked></div>
+
+        <div id='menu-options-labelContainer-crosshair'><label for='toggle-menu-options-crosshair'>Enable Crosshair</label></div>
+        <div id='menu-options-inputContainer-crosshair'><input id='toggle-menu-options-crosshair' name='toggleCrosshair' type='checkbox' checked></div>
+
+        <div id='menu-options-labelContainer-fpsCounter'><label for='toggle-menu-options-fpsCounter'>Enable FPS Counter</label></div>
+        <div id='menu-options-inputContainer-fpsCounter'><input id='toggle-menu-options-fpsCounter' name='toggleFpsCounter' type='checkbox' checked></div>
+
+        <br /><span class='titleSpan-menu-controls'>- Controls<hr class='menuHr-menuDivider' /></span>
+
+        <div id='menu-options-labelContainer-horizontalMouseSensitivity'><label for='toggle-menu-options-horizontalMouseSensitivity'>Horizontal Mouse Sensitivity</label></div>
+        <div id='menu-options-inputContainer-horizontalMouseSensitivity'><input id='slider-menu-options-horizontalMouseSensitivity' class='optionSlider' type='range' min='0.02' max='1.6' value='0.36' step='0.01'><div id='optionSliderDisplayValue-horizontalMouseSensitivity'></div></div>
+
+        <div id='menu-options-labelContainer-verticalMouseSensitivity'><label for='toggle-menu-options-verticalMouseSensitivity'>Vertical Mouse Sensitivity</label></div>
+        <div id='menu-options-inputContainer-verticalMouseSensitivity'><input id='slider-menu-options-verticalMouseSensitivity' class='optionSlider' type='range' min='0.02' max='1.6' value='0.34' step='0.01'><div id='optionSliderDisplayValue-verticalMouseSensitivity'></div></div>
+
+        <div id='menu-options-labelContainer-lockVerticalLook'><label for='toggle-menu-options-lockVerticalLook'>Lock/Disable Vertical Look</label></div>
+        <div id='menu-options-inputContainer-lockVerticalLook'><input id='toggle-menu-options-lockVerticalLook' name='togglelockVerticalLook' type='checkbox'></div>
+
+        <div id='menu-options-labelContainer-alwaysSprint'><label for='toggle-menu-options-alwaysSprint'>Enable Always Sprinting</label></div>
+        <div id='menu-options-inputContainer-alwaysSprint'><input id='toggle-menu-options-alwaysSprint' name='toggleAlwaysSprint' type='checkbox'></div>
+
+      </div>
+    </div>
+  </div>
+
+
+<!--============================================================================================================================|Controls Menu-->
+  <div id='screenOverlay-controlsMenu' class='unselectable alignItems'>
+    <button id='btn-menu-close-controls' class='alignItems'>X</button>
+    <span id='menuTitle-controls'>Keybinds</span>
+    <hr class='menuHr' style='margin:0 0 0.4em 0'/>
+
+    <div id='menuContents-controls' class='alignItems'>
+      <div id='menu-controls-inputGrid' class='alignItems'>
+        <!--================================================================|Movement Keybinds-->
+        <span class='titleSpan-menu-controls'>- Movement<hr class='menuHr-controls' /></span>
+        <div id='menu-controls-labelContainer-move_yNeg'><label for='btn-menu-controls-move_yNeg'>Move forward</label></div>
+        <div id='menu-controls-inputContainer-move_yNeg'><button id='btn-menu-controls-move_yNeg'>w</button></div>
+
+        <div id='menu-controls-labelContainer-move_xNeg'><label for='btn-menu-controls-move_xNeg'>Move left</label></div>
+        <div id='menu-controls-inputContainer-move_xNeg'><button id='btn-menu-controls-move_xNeg'>a</button></div>
+
+        <div id='menu-controls-labelContainer-move_yPos'><label for='btn-menu-controls-move_yPos'>Move back</label></div>
+        <div id='menu-controls-inputContainer-move_yPos'><button id='btn-menu-controls-move_yPos'>s</button></div>
+
+        <div id='menu-controls-labelContainer-move_xPos'><label for='btn-menu-controls-move_xPos'>Move right</label></div>
+        <div id='menu-controls-inputContainer-move_xPos'><button id='btn-menu-controls-move_xPos'>d</button></div>
+
+        <div id='menu-controls-labelContainer-move_sprint'><label for='btn-menu-controls-move_sprint'>Sprint</label></div>
+        <div id='menu-controls-inputContainer-move_sprint'><button id='btn-menu-controls-move_sprint'>shift</button></div>
+
+        <div id='menu-controls-labelContainer-move_jump'><label for='btn-menu-controls-move_jump'>Jump</label></div>
+        <div id='menu-controls-inputContainer-move_jump'><button id='btn-menu-controls-move_jump'>space</button></div>
+
+        <!--================================================================|Look Keybinds-->
+        <br /><span class='titleSpan-menu-controls'>- Look<hr class='menuHr-controls' /></span>
+        <div id='menu-controls-labelContainer-look_recenter'><label for='btn-menu-controls-look_recenter'>Recenter Vertical Look</label></div>
+        <div id='menu-controls-inputContainer-look_recenter'><button id='btn-menu-controls-look_recenter'>z</button></div>
+
+        <div id='menu-controls-labelContainer-look_turnLeft'><label for='btn-menu-controls-look_turnLeft'>Turn left</label></div>
+        <div id='menu-controls-inputContainer-look_turnLeft'><button id='btn-menu-controls-look_turnLeft'>arrowleft</button></div>
+
+        <div id='menu-controls-labelContainer-look_turnRight'><label for='btn-menu-controls-look_turnRight'>Turn right</label></div>
+        <div id='menu-controls-inputContainer-look_turnRight'><button id='btn-menu-controls-look_turnRight'>arrowright</button></div>
+
+        <!--================================================================|Action and UI Keybinds-->
+        <br /><span class='titleSpan-menu-controls'>- Action & UI<hr class='menuHr-controls' /></span>
+        <div id='menu-controls-labelContainer-action_activate'><label for='btn-menu-controls-action_activate'>Use/Activate</label></div>
+        <div id='menu-controls-inputContainer-action_activate'><button id='btn-menu-controls-action_activate'>e</button></div>
+
+        <div id='menu-controls-labelContainer-action_primaryAttack'><label for='btn-menu-controls-action_primaryAttack'>Primary Attack</label></div>
+        <div id='menu-controls-inputContainer-action_primaryAttack'><button id='btn-menu-controls-action_primaryAttack'>f</button></div>
+
+        <!-- <div id='menu-controls-labelContainer-action_secondaryAttack'><label for='btn-menu-controls-action_secondaryAttack'>Secondary attack</label></div>
+        <div id='menu-controls-inputContainer-action_secondaryAttack'><button id='btn-menu-controls-action_secondaryAttack'>c</button></div> -->
+
+        <div id='menu-controls-labelContainer-ui_pause'><label for='btn-menu-controls-ui_pause'>Pause game</label></div>
+        <div id='menu-controls-inputContainer-ui_pause'><button id='btn-menu-controls-ui_pause'>tab</button></div>
+
+        <!--================================================================|Weapon Switching Keybinds-->
+        <br /><span class='titleSpan-menu-controls'>- Weapon Switching<hr class='menuHr-menuDivider' /></span>
+        <div id='menu-controls-labelContainer-weapon_switch1'><label for='btn-menu-controls-weapon_switch1'>Weapon 1</label></div>
+        <div id='menu-controls-inputContainer-weapon_switch1'><button id='btn-menu-controls-weapon_switch1'>1</button></div>
+
+        <div id='menu-controls-labelContainer-weapon_switch2'><label for='btn-menu-controls-weapon_switch2'>Weapon 2</label></div>
+        <div id='menu-controls-inputContainer-weapon_switch2'><button id='btn-menu-controls-weapon_switch2'>2</button></div>
+
+        <div id='menu-controls-labelContainer-weapon_switch3'><label for='btn-menu-controls-weapon_switch3'>Weapon 3</label></div>
+        <div id='menu-controls-inputContainer-weapon_switch3'><button id='btn-menu-controls-weapon_switch3'>3</button></div>
+
+        <div id='menu-controls-labelContainer-weapon_switch4'><label for='btn-menu-controls-weapon_switch4'>Weapon 4</label></div>
+        <div id='menu-controls-inputContainer-weapon_switch4'><button id='btn-menu-controls-weapon_switch4'>4</button></div>
+
+        <br /><br />
+      </div>
+
+      <hr class='menuHr' /><br /><br />
+      <button id='btn-menu-controls-resetKeybinds' class='alignItems' style='width:16em'>Reset Keybinds</button>
+      <br /><br />
+    </div>
+
+    <div id='menu-controls-popup-inputRemap'>
+      <p><!--Press any key to bind it to this action.-->Press the key you wish to rebind to.<br /><br />
+      Press [ESC] to cancel.</p>
+    </div>
+
+    <div id='popup-container-controls-resetKeybinds' class='popup-confirmation alignItems' style='display:none'>
+      <div class='popup-confirmation-text'>Reset all keybinds?</div>
+      <div class='popup-confirmation-buttonContainer alignItems'>
+        <button id='btn-popup-no-controls-resetKeybinds'>No</button>
+        <button id='btn-popup-yes-controls-resetKeybinds'>Yes</button>
+      </div>
+    </div>
+  </div>
+
+
+<!--============================================================================================================================|Pause Menu-->
+  <div id='screenOverlay-pause'>
+    <div id='menu-pause' class='alignItems'>
+      <div id='menu-pause-buttonContainer'>
+        <button id='btn-menu-pause-mainMenu'>Main Menu</button>
+        <button id='btn-menu-pause-reset'>Restart</button>
+        <br /><br /><hr class='menuHr' style='width:72%; border-width: 0.08em' /><br />
+        <button id='btn-menu-pause-graphics'>Graphics</button>
+        <button id='btn-menu-pause-options'>Options</button>
+        <button id='btn-menu-pause-controls'>Keybinds</button>
+      </div>
+      <div id='menu-pause-resumeContainer'>
+        <button id='btn-menu-pause-resume'>Resume</button>
+      </div>
+    </div>
+
+    <div id='popup-container-mainMenu' class='popup-confirmation alignItems'>
+      <div class='popup-confirmation-text'>Return to main menu?</div>
+      <div class='popup-confirmation-buttonContainer alignItems'>
+        <button id='btn-popup-no-mainMenu'>No</button>
+        <button id='btn-popup-yes-mainMenu'>Yes</button>
+      </div>
+    </div>
+
+    <div id='popup-container-reset' class='popup-confirmation alignItems'>
+      <div class='popup-confirmation-text'>Return to main menu?</div>
+      <div class='popup-confirmation-buttonContainer alignItems'>
+        <button id='btn-popup-no-reset'>No</button>
+        <button id='btn-popup-yes-reset'>Yes</button>
+      </div>
+    </div>
+  </div>
+
+
+<!--============================================================================================================================|Game Over Screen-->
+  <div id='screenOverlay-gameOver' class='alignItems'>
+    <span id='gameOver-text'>Game Over</span>
+    <div id='gameOver-btnContainer' class='alignItems'>
+      <div id='menu-gameOver-inputContainer-restart'><button id='btn-menu-gameOver-restart'>Restart</button></div>
+      <div id='menu-gameOver-inputContainer-mainMenu'><button id='btn-menu-gameOver-mainMenu'>Main Menu</button></div>
+    </div>
+  </div>
+
+
+  <!-- <div id='testCursor'></div> -->
+  <div id='simpleLoadingScreen'>Loading...</div>
+  <div id='popupTextContainer'></div>
+
+
+<!--============================================================================================================================|Script References-->
+  <script src='./lib/state-machine.min.js'></script>
+
+
+  <script src='./sourceCode/basicVariablesAndFunctions.js'></script>
+  <script src='./sourceCode/imageDeclarations.js'></script>
+  <script src='./sourceCode/maps.js'></script>
+
+  <!-- TODO: remove -->
+  <!-- <script src='./sourceCode/audioTesting.js'></script> -->
+
+  <script src='./sourceCode/particleSystem.js'></script>
+  <script src='./sourceCode/weaponSystem.js'></script>
+  <script src='./sourceCode/aiStateMachineAttempt.js'></script>
+  <script src='./sourceCode/playerCollisionAndControls.js'></script>
+
+  <script src='./sourceCode/menusAndUi.js'></script>
+  <script src='./sourceCode/miscCode.js'></script>
+  <script src='./sourceCode/renderFunctions.js'></script>
+  <script src='./sourceCode/rayCastingAndGameLoops.js'></script>
+
+  <script src='./sourceCode/initGame.js'></script>
+
+</body>
+</html>

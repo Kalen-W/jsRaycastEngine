@@ -1,0 +1,245 @@
+html {
+  background: #1c1c1c;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+}
+
+dfn {
+  font-style: normal;
+}
+
+.alignItems {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+  float: right;
+  position: absolute;
+  margin-right: -16px;
+}
+
+::-webkit-scrollbar-track {
+  background: #12121236;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444444b2;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4c4e4ec6;
+}
+
+
+/*--------------------------------------------------------------------------------------------------------------------------------|Map Table Section*/
+#mapTable {
+  border: 2px solid #92929250;
+  border-collapse: separate;
+  border-spacing: 2px;
+  padding: 0;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top:1.2%;
+}
+
+#mapTable tr td {
+  border: 1px solid #949a9e28;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 1.4em;
+  width: 1.48em;
+  height: 1.48em;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#mapTable tr td:hover {
+  /*border: 1px solid #ced8dc58;*/
+  outline: #d0d8dc54 solid 1px;
+}
+
+[class*='cell-'] {
+  background: #90909014;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.cell-0 {color: #2c2c2c; background: #00000000}
+.cell-1 {color: #4258c6;}
+.cell-2 {color: #5f7ab1;}
+.cell-3 {color: #778486;}
+.cell-4 {color: #9e8a7d;}
+.cell-5 {color: #428b60;}
+.cell-6 {color: #626558;}
+.cell-7 {color: #95938b;}
+
+
+/*--------------------------------------------------------------------------------------------------------------------------------|Print Div Section*/
+#printDiv {
+  position: absolute;
+  color: #a2a8ad;
+  opacity: 100%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -98.5%;
+  white-space: pre-line;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  font-family: monospace;
+  font-weight: lighter;
+  font-size: 1.2rem;
+  line-height: 1.02em;
+  letter-spacing: -.14em;
+}
+
+/* for use with a div */
+/*#printDiv-inner {
+  background: #0606060e;
+  margin: -.2rem 0 0 0.6rem;
+  width: 96%;
+}*/
+
+/* for use with a textarea */
+#printDiv-inner {
+  background: #0606060e;
+  color: #a2a8ad;
+  border: 0px solid #000;
+  margin: -1.2rem 0 0 0.8rem;
+  padding: 0.2rem;
+  width: 95%;
+  height: 93%;
+  font-family: monospace;
+  font-weight: lighter;
+  font-size: 1.2rem;
+  line-height: 1.02em;
+  letter-spacing: -.14em;
+  resize: none;
+}
+
+textarea:focus {
+  outline: #a2a8ad2e solid 2px;
+  border: 0px solid #000;
+}
+
+
+/*--------------------------------------------------------------------------------------------------------------------------------|Options Section*/
+#numChangeTableContainer {
+  width: 62%;
+  height: 4.8%;
+  margin-top: 0.18%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.45%;
+  background: #0808081c;
+}
+
+#numChangeTable {
+  margin-left: auto;
+  margin-right: auto;
+  color: #aabac0;
+}
+
+#numChangeTable tr td {
+  border: 1px solid #919a9e88;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 1.4em;
+  width: 1.48em;
+  height: 1.48em;
+  padding: 0;
+  margin: 0;
+}
+
+#numChangeTable tr td:hover {
+  outline: #ced8dc80 solid 1px;
+}
+
+
+/*--------------------------------------------------------------------------------------------------------------------------------|Close Button Section*/
+#closeBtn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 2px solid #d0d6da4c;
+  border-radius: 0px;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 1.4em;
+  background: #90909014;
+  color: #aabac0;
+  display: inline-flex;
+}
+
+#closeBtn:hover {
+  outline: #d2d8dc68 solid 1px;
+}
+
+
+/*--------------------------------------------------------------------------------------------------------------------------------|Animation/Transition Section*/
+/*@keyframes printDiv-moveIn {
+  0% {left: -80%;}
+  10% {left: -80.2%}
+  90% {left: 0.2%;}
+  100% {left: 0;}
+}*/
+
+:root {
+  --printDiv-hoverTrans: translateX(1.4%);
+  --printDiv-color: #9090901c;
+  --printDiv-hoverColor: #90909034;
+  --printDiv-hoverOpacity: 38%;
+  --printDiv-transitionTime: 0.4s;
+}
+
+#printDiv {
+  /*animation-name: printDiv-moveIn;
+  animation-direction: reverse;
+  animation-fill-mode: both;
+  animation-duration: 2s;
+  animation: printDiv-moveIn 2s ease 0s infinite alternate;*/
+  transition: left 2s ease 0s, transform 0.4s ease 0s, opacity 0.5s ease 0s, background 0.8s ease 0s;
+  background: var(--printDiv-color);
+}
+
+#printDiv:hover {
+  transform: var(--printDiv-hoverTrans);
+  background: var(--printDiv-hoverColor);
+  /*opacity: var(--printDiv-hoverOpacity);*/
+}
+
+[class*='cell-'] {
+  transition: color 0.16s ease-in 0s, background 0.16s ease-in 0s;
+}
+
+#numChangeTable tr td {
+  transition: border-color 0.2s ease-in 0s;
+}
